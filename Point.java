@@ -8,6 +8,7 @@
  *
  ******************************************************************************/
 
+import java.util.Arrays;
 import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
 
@@ -149,5 +150,23 @@ public class Point implements Comparable<Point> {
         System.out.println("p1 slope == p3 slope? " + c.compare(p1, p3));
         System.out.println("p1 slope == p2 slope? " + c.compare(p1, p2));
         System.out.println("p1 slope == p4 slope? " + c.compare(p1, p4));
+
+        Point[] points = new Point[4];
+        points[0] = new Point(1,1);
+        points[1] = new Point(1,2);
+        points[2] = new Point(2,2);
+        points[3] = new Point(0,2);
+
+        Arrays.sort(points, points[0].slopeOrder());
+
+        /* for (Point p: points)
+        {
+            System.out.println(p);
+        } */
+
+        for (int i = 0; i < 4; i++)
+        {
+            System.out.println(points[i]);
+        }
     }
 }

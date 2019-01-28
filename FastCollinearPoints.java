@@ -38,34 +38,47 @@ public class FastCollinearPoints {
 
         // this.points = points;
         int size = points.length;
-        int c1, c2;
-        Comparator<Point> c;
+        if (size < 4) return;
 
         // sort points
         Arrays.sort(points);
+        Comparator<Point> c;
+
+        Point[] pt;
 
         for (int i = 0; i < size-3; i++)
         {
-            for (int j = i+1; j < size-2; j++)
+            pt = points.clone();
+            Arrays.sort(pt, i, size, pt[i].slopeOrder());
+            /* for (int k = 0; k < size; k++)
             {
-                for (int k = j+1; k < size-1; k++)
+                System.out.println(pt[k]);
+            } */
+
+            int fidx = i+1;
+            int lidx;
+            double fslope = pt[i].slopeTo(pt[fidx]);
+            double slope;
+
+            for (int j = i+1; j < size; j++)
+            {
+                lidx = j;
+                slope = pt[i].slopeTo(pt[lidx]);
+                // System.out.println("i:"+i+" j:"+j + " First:" + fidx + " Last:" + lidx + " Fslope:" + fslope + " slope:" + slope);
+
+                if (slope != fslope || j == size-1)
                 {
-                    for (int kk = k+1; kk < size; kk++)
-                    {
-                        if (points[i] == null || points[j] == null || points[k] == null || points[kk] == null)
-                            throw new IllegalArgumentException();
+                    // find the segment
+                    if (slope != fslope )    lidx--;
 
-                        c = points[i].slopeOrder();
-                        c1 = c.compare(points[j], points[k]);
-                        c2 = c.compare(points[j], points[kk]);
-
-                        if(c1 == 0 && c2 == 0)
-                        {
-                            add(new LineSegment(points[i], points[kk]));
-                            // System.out.println("i:"+i+" j:"+j+" k:"+k+" kk:"+kk);
-                        }
-
+                    if((lidx - fidx) >= 2) {
+                        add(new LineSegment(pt[i], pt[lidx]));
+                        // System.out.println(
+                        //        "Add segment: First:" + i + " Last:" + lidx + " Fslope:" + fslope);
                     }
+
+                    fidx = j;
+                    fslope = slope;
                 }
             }
         }
@@ -82,7 +95,7 @@ public class FastCollinearPoints {
         Node node;
 
         if (numberOfSegments() <= 0)
-            return null;
+            return new LineSegment[0];
 
         node = first;
         result = new LineSegment[numberOfSegments()];
